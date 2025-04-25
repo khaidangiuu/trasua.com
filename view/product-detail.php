@@ -1,13 +1,21 @@
 <?php
-    if (isset($_GET['id'])==false) {header('Location:?view'); }
-    $id = $_GET['id'];
-    if ( product($id)==false) { header('Location:?view');}
-    $product=mysqli_fetch_array(product($id));  
-    $price_sale=price_sale($product['MaSP'],$product['DonGia']);
-    $product_detail_size=product_detail_size($id);
-    $product_detail_color=product_detail_color($id);
-    $product_review=product_review($id);
-    if(product_detail_image($id)==false){$product_detail_image=array('Anh1'=>'loader.gif','Anh2'=>'loader.gif','Anh3'=>'loader.gif','Anh4'=>'loader.gif'); }else{ $product_detail_image=mysqli_fetch_array(product_detail_image($id));}
+if (isset($_GET['id']) == false) {
+    header('Location:?view');
+}
+$id = $_GET['id'];
+if (product($id) == false) {
+    header('Location:?view');
+}
+$product = mysqli_fetch_array(product($id));
+$price_sale = price_sale($product['MaSP'], $product['DonGia']);
+$product_detail_size = product_detail_size($id);
+$product_detail_color = product_detail_color($id);
+$product_review = product_review($id);
+if (product_detail_image($id) == false) {
+    $product_detail_image = array('Anh1' => 'loader.gif', 'Anh2' => 'loader.gif', 'Anh3' => 'loader.gif', 'Anh4' => 'loader.gif');
+} else {
+    $product_detail_image = mysqli_fetch_array(product_detail_image($id));
+}
 ?>
 <div class="breadcrumbs">
     <div class="container">
@@ -57,9 +65,9 @@
                 <div class="product-desc">
                     <h3><?php echo $product['TenSP']; ?></h3>
                     <p class="price">
-                        <span><?php echo number_format($price_sale,0).'₫'; ?></span> 
-                        <?php if(number_format($product['DonGia']) !== number_format($price_sale)){ ?>
-                        <span class="price-old"><?php echo  number_format($product['DonGia'], 0 ).' '.' ₫' ; ?></span> <?php } ?>
+                        <span><?php echo number_format($price_sale, 0) . '₫'; ?></span>
+                        <?php if (number_format($product['DonGia']) !== number_format($price_sale)) { ?>
+                            <span class="price-old"><?php echo  number_format($product['DonGia'], 0) . ' ' . ' ₫'; ?></span> <?php } ?>
                         <span class="rate">
                             <i class="fas fa-star"></i>
                             <i class="fas fa-star"></i>
@@ -71,40 +79,52 @@
                 </div>
                 <div class="size-wrap">
                     <div class="block-26 mb-2">
+                        <?php if (isset($product_detail_size) && $product_detail_size !== false) {?>
                         <h4>Size</h4>
-                        <?php while ($row=(mysqli_fetch_array($product_detail_size))) {?>
-                                <div class="box-size">
-                                    <input type="radio" class="custom-control-input " id="<?php echo $row['MaSize'];?>" name="size" value="<?php echo $row['MaSize'];?>" required>
-                                    <label class="custom-control-label " for="<?php echo $row['MaSize'];?>"><h6><?php echo $row['MaSize'];?></h6></label>
-                                </div> 
-                        <?php }?>
+                        <?php while ($row = (mysqli_fetch_array($product_detail_size))) { ?>
+                            <div class="box-size">
+                                <input type="radio" class="custom-control-input " id="<?php echo $row['MaSize']; ?>" name="size" value="<?php echo $row['MaSize']; ?>" required>
+                                <label class="custom-control-label " for="<?php echo $row['MaSize']; ?>">
+                                    <h6><?php echo $row['MaSize']; ?></h6>
+                                </label>
+                            </div>
+                        <?php } 
+                        } else {
+                            echo '<p class="text-center"> </p>';
+                        } ?>
                     </div>
                 </div>
                 <div class="size-wrap">
                     <div class="block-26 mb-2">
+                    <?php if (isset($product_detail_color) && $product_detail_color !== false) {?>
                         <h4>Topping (Miễn phí)</h4>
-                        <?php while ($row=(mysqli_fetch_array($product_detail_color))) {?>
-                        <div class="box-mau">
-                            <input type="radio" class="custom-control-input " id="<?php echo $row['MaMau'];?>" name="mau" value="<?php echo $row['MaMau'];?>" required>
-                            <label class="custom-control-label " for="<?php echo $row['MaMau'];?>"><h6><?php echo $row['MaMau'];?></h6></label>
-                        </div> <?php }?>
+                        <?php while ($row = (mysqli_fetch_array($product_detail_color))) { ?>
+                            <div class="box-mau">
+                                <input type="radio" class="custom-control-input " id="<?php echo $row['MaMau']; ?>" name="mau" value="<?php echo $row['MaMau']; ?>" required>
+                                <label class="custom-control-label " for="<?php echo $row['MaMau']; ?>">
+                                    <h6><?php echo $row['MaMau']; ?></h6>
+                                </label>
+                            </div> <?php }
+                            } else {
+                                echo '<p class="text-center"> </p>';
+                            } ?>
                     </div>
                 </div>
                 <div class="input-group mb-4">
                     <span class="input-group-btn">
-                        <button type="button" class="quantity-left-minus btn"  id="tru"><i class="fas fa-minus"></i></button>
+                        <button type="button" class="quantity-left-minus btn" id="tru"><i class="fas fa-minus"></i></button>
                     </span>
                     <input type="text" id="soluong" name="soluong" id="soluong" class="form-control input-number" value="1" min="1" max="10">
                     <span class="input-group-btn ml-1">
                         <button type="button" class="quantity-right-plus btn" id="cong"> <i class="fas fa-plus"></i></button>
                     </span>
                 </div>
-                <input type="hidden"  name="idproduct" form="form1"  value='<?php echo $product['MaSP'] ?>'>
-                <input type="hidden"  name="dongia" form="form1"  value='<?php echo number_format($price_sale) ?>'>
+                <input type="hidden" name="idproduct" form="form1" value='<?php echo $product['MaSP'] ?>'>
+                <input type="hidden" name="dongia" form="form1" value='<?php echo number_format($price_sale) ?>'>
                 <div class="col-sm-12 text-center">
                     <p class="addtocart"><button type="submit" form="form1" name='addtocart' class="btn col-sm-12 btn-primary "> Thêm vào giỏ hàng</button></p>
-                </div> 
-            </form>         
+                </div>
+            </form>
         </div>
         <div class="row">
             <div class="col-sm-12">
@@ -122,45 +142,50 @@
                             <div class="tab-content" id="pills-tabContent">
                                 <div class="tab-pane border fade show active" id="pills-description" role="tabpanel" aria-labelledby="pills-description-tab">
                                     <p><?php echo $product['MoTa'] ?> <br>
-                                    Hướng dẫn bảo quản: <br>
+                                        Hướng sử dụng: <br>
 
-- Không dùng hóa chất tẩy. <br>
+                                        - Sản phẩm dùng ngay. <br>
 
-- Ủi ở nhiệt độ thích hợp, hạn chế dùng máy sấy.<br>
-
-- Giặt ở chế độ bình thường, với đồ có màu tương tự.<br></p>
-                                </div>       
-                                <div class="tab-pane border fade" id="pills-review" role="tabpanel" aria-labelledby="pills-review-tab">
-                                <div class="cmt-box"><form action="?view=addtoreview" method="post" id='form2'>
-                                    <textarea name="noidung" id="noidung" placeholder="Viết đánh giá  ..."></textarea>
-                                    <input type="hidden"  name="masp" form="form2"  value='<?php echo $product['MaSP'] ?>'>
-                                    <button form='form2' name="action" value="binhluan" type="submit" class="btn btn-primary alert-danger">Đánh giá</button></form>
+                                        - Không để quá lâu, nếu để lâu sẽ không ngon nữa.<br></p>
                                 </div>
-                                    <div class="row"> 
+                                <div class="tab-pane border fade" id="pills-review" role="tabpanel" aria-labelledby="pills-review-tab">
+                                    <div class="cmt-box">
+                                        <form action="?view=addtoreview" method="post" id='form2'>
+                                            <textarea name="noidung" id="noidung" placeholder="Viết đánh giá  ..."></textarea>
+                                            <input type="hidden" name="masp" form="form2" value='<?php echo $product['MaSP'] ?>'>
+                                            <button form='form2' name="action" value="binhluan" type="submit" class="btn btn-primary alert-danger">Đánh giá</button>
+                                        </form>
+                                    </div>
+                                    <div class="row">
                                         <div class="col-md-12">
-                                            <h3 class="head"><?php if($product_review==false){ echo "Chưa có đánh giá nào~~~";}else{ echo mysqli_num_rows($product_review) .' Đánh giá'  ;?></h3>
-                                            <?php while($row=mysqli_fetch_array($product_review))  { $rowkh=selectKH($row['MaKH']) ?>
-                                            <div class="review">
-                                                <div class="user-img" style="background-image: url('webroot/image/logo/user.png')"></div>
-                                                <div class="desc">
-                                                    <h4>
-                                                        <span class="text-left"><?php echo $rowkh['TenKH'] ?></span>
-                                                        <span class="text-right"><?php echo $row['ThoiGian'] ?></span>
-                                                    </h4>
-                                                    <p class="star">
-                                                        <span>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        </span>
-                                                        
-                                                    </p>
-                                                    <p><?php echo $row['NoiDung'] ?></p>
+                                            <h3 class="head"><?php if ($product_review == false) {
+                                                                    echo "Chưa có đánh giá nào~~~";
+                                                                } else {
+                                                                    echo mysqli_num_rows($product_review) . ' Đánh giá'; ?></h3>
+                                            <?php while ($row = mysqli_fetch_array($product_review)) {
+                                                                        $rowkh = selectKH($row['MaKH']) ?>
+                                                <div class="review">
+                                                    <div class="user-img" style="background-image: url('webroot/image/logo/user.png')"></div>
+                                                    <div class="desc">
+                                                        <h4>
+                                                            <span class="text-left"><?php echo $rowkh['TenKH'] ?></span>
+                                                            <span class="text-right"><?php echo $row['ThoiGian'] ?></span>
+                                                        </h4>
+                                                        <p class="star">
+                                                            <span>
+                                                                <i class="fas fa-star"></i>
+                                                                <i class="fas fa-star"></i>
+                                                                <i class="fas fa-star"></i>
+                                                                <i class="fas fa-star"></i>
+                                                                <i class="fas fa-star"></i>
+                                                            </span>
+
+                                                        </p>
+                                                        <p><?php echo $row['NoiDung'] ?></p>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <?php } }?>
+                                        <?php }
+                                                                } ?>
                                         </div>
                                     </div>
                                 </div>

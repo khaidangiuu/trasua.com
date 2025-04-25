@@ -27,7 +27,7 @@ switch ($view) {
         <div class="row wrapper-dt">
             <div class="col-12">
                 <div class="row pad-dt">
-                    <?php if (isset($products)) {                        
+                    <?php if (isset($products) && $products !== false) {                        
                     while ($row = (mysqli_fetch_array($products))) {
                         $price_sale = price_sale($row['MaSP'], $row['DonGia']); ?>
                         <div class="col-3 col-dt">
